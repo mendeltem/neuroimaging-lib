@@ -510,6 +510,60 @@ def batch_voi2nii(
     return results
 
 
+
+def convert_dicom_to_nifti_robust(dicom_dir, output_dir, output_filename="flair.nii.gz"):
+    """Robust DICOM to NIfTI conversion with multiple fallbacks"""
+    
+    output_path = os.path.join(output_dir, output_filename)
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Try Method 1: dcm2niix first (fastest)
+    print("Trying dcm2niix...")
+    command = f"dcm2niix -z y -f {output_filename.replace('.nii.gz', '')} -o {output_dir} {dicom_dir}"
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    
+    if result.returncode == 0:
+        print("✓ dcm2niix successful!")
+        return True
+    
+    # Try Method 2: SimpleITK (handles JPEG2000)
+    print("dcm2niix failed, trying SimpleITK...")
+    try:
+        reader = sitk.ImageSeriesReader()
+        series_ids = reader.GetGDCMSeriesIDs(dicom_dir)
+        
+        if series_ids:
+            dicom_files = reader.GetGDCMSeriesFileNames(dicom_dir, series_ids[0])
+            reader.SetFileNames(dicom_files)
+            image = reader.Execute()
+            sitk.WriteImage(image, output_path)
+            print("✓ SimpleITK successful!")
+            return True
+    except Exception as e:
+        print(f"SimpleITK failed: {e}")
+    
+    # Try Method 3: Manual conversion as last resort
+    print("Trying manual conversion...")
+    try:
+
+        
+        dicom_files = [os.path.join(dicom_dir, f) for f in os.listdir(dicom_dir) if f.endswith('.dcm')]
+        slices = [pydicom.dcmread(f) for f in dicom_files]
+        slices.sort(key=lambda x: getattr(x, 'InstanceNumber', 0))
+        
+        volume = np.stack([s.pixel_array for s in slices], axis=-1)
+        affine = np.eye(4)
+        
+        img = nib.Nifti1Image(volume, affine)
+        nib.save(img, output_path)
+        print("✓ Manual conversion successful!")
+        return True
+    except Exception as e:
+        print(f"All methods failed: {e}")
+        return False
+
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logger.info("VOI to NIfTI Conversion Module imported successfully")

@@ -1,3 +1,41 @@
-nibabel>=5.0.0
-nipype>=1.8.0
-ants>=0.3.0
+# Core Neuroimaging Libraries
+nibabel>=5.0.0          # NIfTI file I/O and medical image handling
+nipype>=1.8.0           # Neuroimaging workflow engine
+ants>=0.3.0             # Advanced Normalization Tools (ANTs) Python wrapper
+
+# Scientific Computing & Data Analysis
+numpy>=1.21.0           # Numerical computing
+scipy>=1.7.0            # Scientific computing functions
+pandas>=1.3.0           # Data manipulation and analysis
+scikit-image>=0.18.0    # Image processing algorithms
+scikit-learn>=1.0.0     # Machine learning utilities
+
+# Medical Image Processing
+pydicom>=2.3.0          # DICOM file handling
+dcm2niix>=1.0.0         # DICOM to NIfTI conversion
+SimpleITK>=2.1.0        # Medical image processing framework
+
+# BIDS Support
+pybids>=0.15.0          # BIDS dataset handling
+bids-validator>=1.9.0   # BIDS validation
+
+# Visualization
+matplotlib>=3.4.0       # Plotting library
+seaborn>=0.11.0         # Statistical data visualization
+nilearn>=0.9.0          # Neuroimaging visualization utilities
+
+# Deep Learning (optional, common for stroke analysis)
+torch>=1.9.0            # PyTorch deep learning framework
+torchvision>=0.10.0     # Computer vision models for PyTorch
+# tensorflow>=2.8.0      # TensorFlow (uncomment if using TensorFlow instead)
+
+# Statistical Analysis
+statsmodels>=0.13.0     # Statistical modeling and testing
+scipy>=1.7.0            # Statistical functions
+
+# Utilities
+tqdm>=4.62.0            # Progress bars
+pyyaml>=5.4.0           # YAML configuration files
+click>=8.0.0            # Command-line interface creation
+python-dotenv>=0.19.0   # Environment variable management
+Pillow>=8.3.0           # Image processing
